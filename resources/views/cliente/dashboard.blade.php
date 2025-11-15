@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 </head>
 <body class="bg-light">
-
+    @extends('layouts.navigation')
     <div class="container py-5 text-center">
         <h1 class="mb-4">Bienvenido, {{ Auth::user()->nombre_usuario }}</h1>
 
