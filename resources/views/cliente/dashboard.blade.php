@@ -1,26 +1,69 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel del Cliente</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-</head>
-<body class="bg-light">
-    @extends('layouts.navigation')
-    <div class="container py-5 text-center">
-        <h1 class="mb-4">Bienvenido, {{ Auth::user()->nombre_usuario }}</h1>
+@extends('layouts.app')
 
-        <p class="text-muted">Has iniciado sesión como <strong>Cliente</strong>.</p>
+@section('content')
 
-        {{-- Botón para cerrar sesión --}}
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="btn btn-danger mt-3">
-                Cerrar sesión
-            </button>
-        </form>
+@if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
+<div class="container mt-4">
+
+    <h2>Bienvenido Cliente</h2>
+    <p>Aquí podrás gestionar tus PQRS.</p>
+
+    {{-- Botón crear pqr --}}
+    <a href="{{ route('pqr.create') }}" class="btn btn-primary mt-3">
+        Crear nueva PQR
+    </a>
+
+    {{-- Cerrar sesión --}}
+    <form method="POST" action="{{ route('logout') }}" class="mt-3">
+        @csrf
+        <button type="submit" class="btn btn-danger">
+            Cerrar sesión
+        </button>
+    </form>
+
+    <hr class="my-4">
+
+    <h2 class="mb-4">Mis PQRs</h2>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Radicado</th>
+                <th>Asunto</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @forelse ($pqrs as $pqr)
+                <tr>
+                    <td><a href="{{ route('pqr.historial', $pqr->id_pqrs) }}" class="btn btn-info btn-sm">Ver</a></td>
+                    <td>{{ $pqr->numero_radicado }}</td>
+                    <td>{{ $pqr->asunto }}</td>
+                    <td>{{ $pqr->estado->nombre_estado ?? 'N/A' }}</td>
+                    <td>{{ $pqr->fecha_creacion->format('d-m-Y H:i') }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="4" class="text-center">No tienes PQRs registradas.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-center">
+        {{ $pqrs->links() }}
     </div>
 
-</body>
-</html>
+</div>
+
+@endsection
+

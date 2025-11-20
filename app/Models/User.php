@@ -12,6 +12,7 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
     //No tocar plis
+    protected $table = 'users';
     protected $primaryKey = 'id_users';
     public $incrementing = true;
     protected $keyType = 'int';
