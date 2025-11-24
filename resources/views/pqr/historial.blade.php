@@ -39,35 +39,6 @@
         </div>
     </div>
 
-    {{-- Tabla del historial --}}
-    <h4>Historial Completo</h4>
-
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Fecha</th>
-                <th>Usuario</th>
-                <th>Acción</th>
-                <th>Descripción</th>
-            </tr>
-        </thead>
-
-        <tbody>
-        @forelse ($pqr->historial as $item)
-            <tr>
-                <td>{{ \Carbon\Carbon::parse($item->fecha_registro)->format('d-m-Y H:i') }}</td>
-                <td>{{ $item->usuario->nombres }} {{ $item->usuario->apellidos }}</td>
-                <td>{{ $item->accion }}</td>
-                <td>{{ $item->descripcion }}</td>
-            </tr>
-        @empty
-            <tr>
-                <td colspan="4" class="text-center">No hay historial registrado.</td>
-            </tr>
-        @endforelse
-        </tbody>
-    </table>
-
     <a href="{{ route('cliente.dashboard') }}" class="btn btn-secondary">Volver</a>
 
 </div>

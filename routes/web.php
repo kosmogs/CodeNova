@@ -14,17 +14,28 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
 
     // ---------------- ADMIN ----------------
-    Route::middleware(['role:Administrador'])->group(function () {
-        Route::get('/admin/dashboard', fn() => view('admin.dashboard'))
-            ->name('admin.dashboard');
+    Route::middleware(['role:1'])
+        ->prefix('admin')
+        ->as('admin.')
+        ->group(function () {
 
-        // Vistas propias del admin
-        Route::get('/admin/pqrs/crear', fn() => view('admin.crear'))->name('admin.pqrs.crear');
-        Route::get('/admin/pqrs/{id}/detalles', fn($id) => view('admin.detalles', compact('id')))
-            ->name('admin.pqrs.detalles');
-        Route::get('/admin/pqrs/{id}/editar', fn($id) => view('admin.editar', compact('id')))
-            ->name('admin.pqrs.editar');
-    });
+            // Dashboard admin
+            Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])
+                ->name('dashboard');
+            //Ruta editar usuario
+            Route::get('/admin/users/{usuario}/edit', [UsersController::class, 'edit'])
+                ->name('admin.users.edit');
+            Route::put('/admin/users/{usuario}', [UsersController::class, 'update'])
+                ->name('admin.users.update');
+
+            // CRUD supervisores y gestores
+            Route::resource('users', App\Http\Controllers\Admin\UsersController::class)->parameters(['users'=>'user']);
+            //Ruta eliminar usuario
+            Route::delete('/admin/users/{id}', [UsersController::class, 'destroy'])
+                ->name('admin.users.destroy');
+
+        });
+
 
     // ---------------- SUPERVISOR ----------------
     Route::middleware(['role:Supervisor'])->group(function () {

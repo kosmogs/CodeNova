@@ -34,11 +34,11 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Radicado</th>
+                <th></th>
+                <th>Numero Radicado</th>
                 <th>Asunto</th>
                 <th>Estado</th>
                 <th>Fecha</th>
-                <th>Acciones</th>
             </tr>
         </thead>
 

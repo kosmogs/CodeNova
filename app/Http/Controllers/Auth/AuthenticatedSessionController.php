@@ -24,33 +24,43 @@ class AuthenticatedSessionController extends Controller
      */
 
     //Redireccion login segun rol
+    
+
+
     public function store(Request $request)
     {
-        // Autenticación
-        $credentials = $request->only('email', 'password');
+        // Validación de login
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required']
+        ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            $user = Auth::user();
-
-            // Redirección según el rol
-            switch ($user->role) {
-                case 'Administrador':
-                    return redirect()->route('admin.dashboard');
-                case 'Supervisor':
-                    return redirect()->route('supervisor.dashboard');
-                case 'Gestor':
-                    return redirect()->route('gestor.dashboard');
-                default:
-                    return redirect()->route('cliente.dashboard');
-            }
+        // Intento de login
+        if (!Auth::attempt($credentials)) {
+            return back()
+                ->withErrors(['email' => 'Credenciales incorrectas'])
+                ->onlyInput('email');
         }
 
-        // Si falla el login
-        return back()->withErrors([
-            'email' => 'Las credenciales no coinciden con nuestros registros.',
-        ]);
+        // Regenera la sesión por seguridad
+        $request->session()->regenerate();
+
+        // Redirección por rol
+        switch (auth()->user()->id_rol) {
+            case 1:
+                return redirect()->route('admin.dashboard');
+            case 2:
+                return redirect()->route('supervisor.dashboard');
+            case 3:
+                return redirect()->route('gestor.dashboard');
+            case 4:
+                return redirect()->route('cliente.dashboard');
+            default:
+                return redirect()->route('home');
+        }
     }
+
+
 
     /**
      * Destroy an authenticated session.

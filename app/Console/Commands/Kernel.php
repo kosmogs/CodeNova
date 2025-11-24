@@ -16,6 +16,12 @@ class Kernel extends ConsoleKernel
         $schedule->command('pqr:actualizar-estados')->hourly();
     }
 
+    protected $routeMiddleware = [
+    // ...
+    'role' => \App\Http\Middleware\RoleMiddleware::class,
+    ];
+
+
     /**
      * Register the commands for the application.
      */
