@@ -66,4 +66,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function scopeGestores($query)
+    {
+        return $query->where('id_rol', 3);
+    }
 }

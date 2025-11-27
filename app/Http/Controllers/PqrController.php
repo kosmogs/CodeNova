@@ -79,18 +79,16 @@ class PqrController extends Controller
 
         // Generar número de radicado único
         $radicado = date('YmdHis') . '-' . rand(10, 99);
-        
         // Asignación automática de un gestor
-        // IMPORTANTE: Aquí debes poner la lógica de tu sistema
-        // Temporal: gestor con ID 5
-        $gestorAsignado = 5;
+        $gestor = User::where('id_rol', 3)->inRandomOrder()->first();
+        //dd($gestor, $gestor?->id);
         $pqr = Pqr::create([
             'id_users' => $user->id_users,
             'numero_radicado' => $radicado,
             'descripcion'    => $request->descripcion,
             'asunto' => $request ->asunto,
             'fecha_creacion'  => Carbon::now(),
-            'id_gestor'       => $gestorAsignado,
+            'id_gestor'       => $gestor->id_users,
             'id_tipo'      => $request->id_tipo,
             'id_estado'       => 1,   
             'id_archivo'      => null // Aún no se carga archivo
@@ -141,12 +139,13 @@ class PqrController extends Controller
             'id_estado' => $request->id_estado
         ]);
 
-        return redirect()->route('gestor.dashboard')
+        return redirect()->route('gestor.pqrs.index')
             ->with('success', 'PQR actualizada correctamente.');
     }
     //ver historial
     public function verHistorial($id)
     {
+        //dd('Entró verHistorial', $id);
         $pqr = Pqr::with([
             'usuario',  // cliente
             'historial.usuario' => function ($q) {   // usuario que hizo la acción
@@ -162,6 +161,12 @@ class PqrController extends Controller
         // Última acción
         $ultimaAccion = $pqr->historial->first();
 
+        // Si es rol 3 = gestor → vista del gestor
+        if (auth()->user()->id_rol == 3) {
+            return view('gestor.pqrs.historial', compact('pqr', 'ultimaAccion'));
+        }
+    
+        // Sino → vista del cliente
         return view('pqr.historial', compact('pqr', 'ultimaAccion'));
     }
 

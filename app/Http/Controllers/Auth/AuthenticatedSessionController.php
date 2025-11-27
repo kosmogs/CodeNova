@@ -52,7 +52,7 @@ class AuthenticatedSessionController extends Controller
             case 2:
                 return redirect()->route('supervisor.dashboard');
             case 3:
-                return redirect()->route('gestor.dashboard');
+                return redirect()->route('gestor.pqrs.index');
             case 4:
                 return redirect()->route('cliente.dashboard');
             default:

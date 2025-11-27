@@ -42,7 +42,7 @@ class UsersController extends Controller {
         User::create([
             'nombre_usuario'=>$request->nombre_usuario,
             'apellidos_usuario'=>$request->apellidos_usuario,
-            'tipo_documento'=>$request->tipo_documento,
+            'tipo_documento'=>$tipoDocumento,
             'numero_documento'=>$request->numero_documento,
             'telefono'=>$request->telefono,
             'email'=>$request->email,

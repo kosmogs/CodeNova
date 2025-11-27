@@ -4,6 +4,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PqrController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\GestorController;
+use App\Http\Controllers\Admin\UsersController;
+
 
 
 Route::get('/', function () {
@@ -38,23 +41,34 @@ Route::middleware(['auth'])->group(function () {
 
 
     // ---------------- SUPERVISOR ----------------
-    Route::middleware(['role:Supervisor'])->group(function () {
+    Route::middleware(['role:2'])->group(function () {
         Route::get('/supervisor/dashboard', fn() => view('supervisor.dashboard'))
             ->name('supervisor.dashboard');
     });
 
     // ---------------- GESTOR ----------------
-    Route::middleware(['role:Gestor'])->group(function () {
-        Route::get('/gestor/dashboard', fn() => view('gestor.dashboard'))
-            ->name('gestor.dashboard');
+    Route::middleware(['role:3'])->group(function () {
+    //Index
+    Route::get('/gestor/pqrs', [GestorController::class, 'index'])
+    ->name('gestor.pqrs.index');
+    //Estado
+    Route::post('/gestor/pqrs/{id}/estado', [GestorController::class, 'cambiarEstado'])
+    ->name('gestor.pqrs.estado');
+    //Historial
+    Route::get('/gestor/pqrs/{id}/historial', [PqrController::class, 'verHistorial'])
+    ->name('gestor.pqrs.historial');
 
-        // Si el gestor edita PQR
-        Route::get('/gestor/{id}/edit', fn($id) => view('gestor.edit', compact('id')))
-            ->name('gestor.edit');
-    });
+        //Route::get('/gestor/pqrs', [GestorController::class, 'index'])
+          //  ->name('gestor.pqrs')
+            //->middleware('auth', 'role:3'); ole gay y lo de los portatiles que
+
+        // Cambiar estado
+        Route::post('/gestor/pqrs/{id}/estado', [GestorController::class, 'cambiarEstado'])
+            ->name('gestor.pqrs.estado');
+            });
 
     // ---------------- CLIENTE ----------------
-    Route::middleware(['role:Cliente'])->group(function () {
+    Route::middleware(['role:4'])->group(function () {
         Route::get('/cliente/dashboard', [ClienteController::class, 'index'])
             ->name('cliente.dashboard');
 
